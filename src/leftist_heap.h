@@ -14,7 +14,7 @@ private:
         using node_type = LeftistHeapNode;
         using node_ptr = node_type *;
 
-        LeftistHeapNode(value_type val, size_type rank, node_ptr left, node_ptr right) : val(val), rank(rank), left(left), right(right) {}
+        LeftistHeapNode(value_type val) : val(val), rank(1), left(nullptr), right(nullptr) {}
 
         value_type val;
         size_type rank;
@@ -26,49 +26,49 @@ private:
     using node_ptr = LeftistHeapNode::node_ptr;
 
     size_type size_;
-    node_ptr head_;
+    node_ptr root_;
 
-    static node_ptr merge(node_ptr h1, node_ptr h2) noexcept
+    static node_ptr merge(node_ptr r1, node_ptr r2) noexcept
     {
-        if (h1 == nullptr)
-            return h2;
+        if (r1 == nullptr)
+            return r2;
 
-        if (h2 == nullptr)
-            return h1;
+        if (r2 == nullptr)
+            return r1;
 
-        if (h1->val < h2->val)
-            std::swap(h1, h2);
+        if (r1->val < r2->val)
+            std::swap(r1, r2);
 
-        h1->right = merge(h1->right, h2);
+        r1->right = merge(r1->right, r2);
 
-        if (h1->left == nullptr)
+        if (r1->left == nullptr)
         {
-            std::swap(h1->left, h1->right);
-            h1->rank = 1;
-            return h1;
+            std::swap(r1->left, r1->right);
+            r1->rank = 1;
+            return r1;
         }
 
-        if (h1->left->rank < h1->right->rank)
-            std::swap(h1->left, h1->right);
+        if (r1->left->rank < r1->right->rank)
+            std::swap(r1->left, r1->right);
 
-        h1->rank = h1->left->rank + 1;
-        return h1;
+        r1->rank = r1->left->rank + 1;
+        return r1;
     }
 
 public:
-    explicit LeftistHeap(const std::vector<value_type> &values)
+    explicit LeftistHeap(const std::vector<value_type> &vals)
     {
-        size_ = values.size();
+        size_ = vals.size();
 
-        if (values.size() == 0)
+        if (vals.size() == 0)
         {
-            head_ = nullptr;
+            root_ = nullptr;
             return;
         }
 
         std::queue<node_ptr> q;
-        for (const auto value : values)
-            q.push(new node_type(value, 1, nullptr, nullptr));
+        for (const auto val : vals)
+            q.push(new node_type(val));
 
         while (q.size() != 1)
         {
@@ -79,7 +79,7 @@ public:
             q.push(merge(n1, n2));
         }
 
-        head_ = q.back();
+        root_ = q.back();
     }
 
     [[nodiscard]] bool empty() const noexcept override
@@ -95,21 +95,21 @@ public:
     [[nodiscard]] value_type max() const noexcept override
     {
         assert(!empty());
-        return head_->val;
+        return root_->val;
     }
 
     void push(value_type val) noexcept override
     {
-        auto node = new node_type(val, 1, nullptr, nullptr);
-        head_ = merge(head_, node);
+        auto node = new node_type(val);
+        root_ = merge(root_, node);
     }
 
     void pop() noexcept override
     {
         assert(!empty());
-        auto left = head_->left;
-        auto right = head_->right;
-        delete head_;
-        head_ = merge(left, right);
+        auto left = root_->left;
+        auto right = root_->right;
+        delete root_;
+        root_ = merge(left, right);
     }
 };
