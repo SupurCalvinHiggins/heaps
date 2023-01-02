@@ -103,7 +103,7 @@ public:
         node_ptr new_heap = nullptr;
         auto subtree = cur->child;
         while (subtree){
-            auto next_subtree= subtree->next;
+            auto next_subtree = subtree->next;
             subtree->next = new_heap;
             new_heap = subtree;
             subtree = next_subtree;
