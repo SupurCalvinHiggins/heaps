@@ -102,9 +102,12 @@ public:
         // need to reverse the subtree order to make a heap
         node_ptr new_heap = nullptr;
         auto subtree = cur->child;
-        // jessica do this.
-
-        // end jessica
+        while (subtree){
+            auto next_subtree= subtree->next;
+            subtree->next = new_heap;
+            new_heap = subtree;
+            subtree = next_subtree;
+        }
 
         // merge the heaps
         root_ = merge(root_, new_heap);
