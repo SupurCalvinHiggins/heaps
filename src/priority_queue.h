@@ -1,10 +1,9 @@
 #pragma once
 
-
 #include <cstdlib>
 
-
-class BaseHeap {
+class PriorityQueue
+{
 public:
     using size_type = std::size_t;
     using value_type = int;

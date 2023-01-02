@@ -1,18 +1,18 @@
 #pragma once
 
-
+#include <queue>
 #include <algorithm>
 #include <cassert>
-#include "base_heap.h"
+#include "priority_queue.h"
 
-
-class LeftistHeap : public BaseHeap {
+class LeftistHeap : public PriorityQueue
+{
 private:
-
-    class LeftistHeapNode {
+    class LeftistHeapNode
+    {
     public:
         using node_type = LeftistHeapNode;
-        using node_ptr = node_type*;
+        using node_ptr = node_type *;
 
         LeftistHeapNode(value_type val, size_type rank, node_ptr left, node_ptr right) : val(val), rank(rank), left(left), right(right) {}
 
@@ -28,7 +28,8 @@ private:
     size_type size_;
     node_ptr head_;
 
-    static node_ptr merge(node_ptr h1, node_ptr h2) noexcept {
+    static node_ptr merge(node_ptr h1, node_ptr h2) noexcept
+    {
         if (h1 == nullptr)
             return h2;
 
@@ -40,7 +41,8 @@ private:
 
         h1->right = merge(h1->right, h2);
 
-        if (h1->left == nullptr) {
+        if (h1->left == nullptr)
+        {
             std::swap(h1->left, h1->right);
             h1->rank = 1;
             return h1;
@@ -54,28 +56,56 @@ private:
     }
 
 public:
+    explicit LeftistHeap(const std::vector<value_type> &values)
+    {
+        size_ = values.size();
 
-    explicit LeftistHeap(const std::vector<value_type>& values) : head_(nullptr), size_(0) {}
+        if (values.size() == 0)
+        {
+            head_ = nullptr;
+            return;
+        }
 
-    [[nodiscard]] bool empty() const noexcept override {
+        std::queue<node_ptr> q;
+        for (const auto value : values)
+            q.push(new node_type(value, 1, nullptr, nullptr));
+
+        while (q.size() != 1)
+        {
+            auto n1 = q.back();
+            q.pop();
+            auto n2 = q.back();
+            q.pop();
+            q.push(merge(n1, n2));
+        }
+
+        head_ = q.back();
+    }
+
+    [[nodiscard]] bool empty() const noexcept override
+    {
         return size() == 0;
     }
 
-    [[nodiscard]] size_type size() const noexcept override {
+    [[nodiscard]] size_type size() const noexcept override
+    {
         return size_;
     }
 
-    [[nodiscard]] value_type max() const noexcept override {
+    [[nodiscard]] value_type max() const noexcept override
+    {
         assert(!empty());
         return head_->val;
     }
 
-    void push(value_type val) noexcept override {
+    void push(value_type val) noexcept override
+    {
         auto node = new node_type(val, 1, nullptr, nullptr);
         head_ = merge(head_, node);
     }
 
-    void pop() noexcept override {
+    void pop() noexcept override
+    {
         assert(!empty());
         auto left = head_->left;
         auto right = head_->right;
