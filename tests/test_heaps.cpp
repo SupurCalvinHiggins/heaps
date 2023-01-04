@@ -1,6 +1,7 @@
 #include <vector>
 #include "gtest/gtest.h"
 #include "leftist_heap.h"
+#include "maxiphobic_heap.h"
 
 template<typename T>
 class HeapTest : public testing::Test {
@@ -8,7 +9,7 @@ public:
     using heap_type = T;
 };
 
-using HeapTypes = ::testing::Types<LeftistHeap>;
+using HeapTypes = ::testing::Types<LeftistHeap, MaxiphobicHeap>;
 TYPED_TEST_SUITE(HeapTest, HeapTypes);
 
 TYPED_TEST(HeapTest, EmptyWithEmptyInit) {
@@ -99,7 +100,7 @@ TYPED_TEST(HeapTest, FillDrainWithEmptyInit) {
 
     for (int i = 0; i < push_values.size(); ++i) {
         const auto max = 9 - i;
-        const auto size = 9 - i;
+        const auto size = 10 - i;
         EXPECT_FALSE(heap.empty());
         EXPECT_EQ(heap.size(), size);
         EXPECT_EQ(heap.max(), max);

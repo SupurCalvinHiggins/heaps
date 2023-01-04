@@ -55,7 +55,7 @@ public:
     explicit LeftistHeap(const std::vector<value_type> &vals) {
         size_ = vals.size();
 
-        if (vals.size() == 0) {
+        if (vals.empty()) {
             root_ = nullptr;
             return;
         }
@@ -89,12 +89,14 @@ public:
     }
 
     void push(value_type val) noexcept override {
+        ++size_;
         auto node = new node_type(val);
         root_ = merge(root_, node);
     }
 
     void pop() noexcept override {
         assert(!empty());
+        --size_;
         auto left = root_->left;
         auto right = root_->right;
         delete root_;
