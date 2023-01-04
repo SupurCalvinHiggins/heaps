@@ -2,9 +2,8 @@
 #include "gtest/gtest.h"
 #include "leftist_heap.h"
 
-template <typename T>
-class HeapTest : public testing::Test
-{
+template<typename T>
+class HeapTest : public testing::Test {
 public:
     using heap_type = T;
 };
@@ -12,8 +11,7 @@ public:
 using HeapTypes = ::testing::Types<LeftistHeap>;
 TYPED_TEST_SUITE(HeapTest, HeapTypes);
 
-TYPED_TEST(HeapTest, EmptyWithEmptyInit)
-{
+TYPED_TEST(HeapTest, EmptyWithEmptyInit) {
     using heap_type = typename TestFixture::heap_type;
     using value_type = typename heap_type::value_type;
 
@@ -23,8 +21,7 @@ TYPED_TEST(HeapTest, EmptyWithEmptyInit)
     EXPECT_TRUE(heap.empty());
 }
 
-TYPED_TEST(HeapTest, SizeWithEmptyInit)
-{
+TYPED_TEST(HeapTest, SizeWithEmptyInit) {
     using heap_type = typename TestFixture::heap_type;
     using value_type = typename heap_type::value_type;
 
@@ -34,8 +31,7 @@ TYPED_TEST(HeapTest, SizeWithEmptyInit)
     EXPECT_EQ(heap.size(), 0);
 }
 
-TYPED_TEST(HeapTest, MaxWithEmptyInit)
-{
+TYPED_TEST(HeapTest, MaxWithEmptyInit) {
     using heap_type = typename TestFixture::heap_type;
     using value_type = typename heap_type::value_type;
 
@@ -45,8 +41,7 @@ TYPED_TEST(HeapTest, MaxWithEmptyInit)
     EXPECT_DEATH({ heap.max(); }, "");
 }
 
-TYPED_TEST(HeapTest, PopWithEmptyInit)
-{
+TYPED_TEST(HeapTest, PopWithEmptyInit) {
     using heap_type = typename TestFixture::heap_type;
     using value_type = typename heap_type::value_type;
 
@@ -56,8 +51,7 @@ TYPED_TEST(HeapTest, PopWithEmptyInit)
     EXPECT_DEATH({ heap.pop(); }, "");
 }
 
-TYPED_TEST(HeapTest, PushWithEmptyInit)
-{
+TYPED_TEST(HeapTest, PushWithEmptyInit) {
     using heap_type = typename TestFixture::heap_type;
     using value_type = typename heap_type::value_type;
 
@@ -71,8 +65,7 @@ TYPED_TEST(HeapTest, PushWithEmptyInit)
     EXPECT_EQ(heap.max(), 7);
 }
 
-TYPED_TEST(HeapTest, FillWithEmptyInit)
-{
+TYPED_TEST(HeapTest, FillWithEmptyInit) {
     using heap_type = typename TestFixture::heap_type;
     using value_type = typename heap_type::value_type;
 
@@ -81,8 +74,7 @@ TYPED_TEST(HeapTest, FillWithEmptyInit)
 
     std::vector<value_type> push_values{7, 3, 8, 9, 1, 2, 4, 6, 5, 0};
     std::vector<value_type> max_after_push{7, 7, 8, 9, 9, 9, 9, 9, 9, 9};
-    for (int i = 0; i < push_values.size(); ++i)
-    {
+    for (int i = 0; i < push_values.size(); ++i) {
         const auto value = push_values[i];
         heap.push(value);
 
@@ -94,8 +86,7 @@ TYPED_TEST(HeapTest, FillWithEmptyInit)
     }
 }
 
-TYPED_TEST(HeapTest, FillDrainWithEmptyInit)
-{
+TYPED_TEST(HeapTest, FillDrainWithEmptyInit) {
     using heap_type = typename TestFixture::heap_type;
     using value_type = typename heap_type::value_type;
 
@@ -103,11 +94,10 @@ TYPED_TEST(HeapTest, FillDrainWithEmptyInit)
     heap_type heap(values);
 
     std::vector<value_type> push_values{3, 7, 1, 2, 8, 4, 9, 0, 5, 6};
-    for (const auto value : push_values)
+    for (const auto value: push_values)
         heap.push(value);
 
-    for (int i = 0; i < push_values.size(); ++i)
-    {
+    for (int i = 0; i < push_values.size(); ++i) {
         const auto max = 9 - i;
         const auto size = 9 - i;
         EXPECT_FALSE(heap.empty());
@@ -121,8 +111,7 @@ TYPED_TEST(HeapTest, FillDrainWithEmptyInit)
     EXPECT_EQ(heap.size(), 0);
 }
 
-TYPED_TEST(HeapTest, FillDrainFillWithEmptyInit)
-{
+TYPED_TEST(HeapTest, FillDrainFillWithEmptyInit) {
     using heap_type = typename TestFixture::heap_type;
     using value_type = typename heap_type::value_type;
 
@@ -130,15 +119,14 @@ TYPED_TEST(HeapTest, FillDrainFillWithEmptyInit)
     heap_type heap(values);
 
     std::vector<value_type> push_values{1, 6, 7, 3, 2, 8, 4, 0, 5, 9};
-    for (const auto value : push_values)
+    for (const auto value: push_values)
         heap.push(value);
 
-    for (const auto _ : push_values)
+    for (const auto _: push_values)
         heap.pop();
 
     std::vector<value_type> max_after_push{1, 6, 7, 7, 7, 8, 8, 8, 8, 9};
-    for (int i = 0; i < push_values.size(); ++i)
-    {
+    for (int i = 0; i < push_values.size(); ++i) {
         const auto value = push_values[i];
         heap.push(value);
 
@@ -151,13 +139,21 @@ TYPED_TEST(HeapTest, FillDrainFillWithEmptyInit)
 }
 
 TYPED_TEST(HeapTest, EmptyWithNonEmptyInit) {}
+
 TYPED_TEST(HeapTest, SizeWithNonEmptyInit) {}
+
 TYPED_TEST(HeapTest, MaxWithNonEmptyInit) {}
+
 TYPED_TEST(HeapTest, PopWithNonEmptyInit) {}
+
 TYPED_TEST(HeapTest, PushWithNonEmptyInit) {}
 
 TYPED_TEST(HeapTest, DrainWithNonEmptyInit) {}
+
 TYPED_TEST(HeapTest, FillWithNonEmptyInit) {}
+
 TYPED_TEST(HeapTest, FillDrainWithNonEmptyInit) {}
+
 TYPED_TEST(HeapTest, DrainFillWithNonEmptyInit) {}
+
 TYPED_TEST(HeapTest, FillDrainFillWithNonEmptyInit) {}
