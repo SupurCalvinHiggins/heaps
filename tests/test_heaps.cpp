@@ -139,15 +139,66 @@ TYPED_TEST(HeapTest, FillDrainFillWithEmptyInit) {
     }
 }
 
-TYPED_TEST(HeapTest, EmptyWithNonEmptyInit) {}
+TYPED_TEST(HeapTest, EmptyWithNonEmptyInit) {
+    using heap_type = typename TestFixture::heap_type;
+    using value_type = typename heap_type::value_type;
 
-TYPED_TEST(HeapTest, SizeWithNonEmptyInit) {}
+    std::vector<value_type> values{0};
+    heap_type heap(values);
 
-TYPED_TEST(HeapTest, MaxWithNonEmptyInit) {}
+    EXPECT_FALSE(heap.empty());
+}
 
-TYPED_TEST(HeapTest, PopWithNonEmptyInit) {}
+TYPED_TEST(HeapTest, SizeWithNonEmptyInit) {
+    using heap_type = typename TestFixture::heap_type;
+    using value_type = typename heap_type::value_type;
 
-TYPED_TEST(HeapTest, PushWithNonEmptyInit) {}
+    std::vector<value_type> values{0};
+    heap_type heap(values);
+
+    EXPECT_EQ(heap.size(), 1);
+}
+
+TYPED_TEST(HeapTest, MaxWithNonEmptyInit) {
+    using heap_type = typename TestFixture::heap_type;
+    using value_type = typename heap_type::value_type;
+
+    std::vector<value_type> values{2, 3, 0, 1, 5, 4};
+    heap_type heap(values);
+
+    EXPECT_EQ(heap.max(), 5);
+}
+
+TYPED_TEST(HeapTest, PopWithNonEmptyInit) {
+    using heap_type = typename TestFixture::heap_type;
+    using value_type = typename heap_type::value_type;
+
+    std::vector<value_type> values{2, 3, 0, 1, 5, 4};
+    heap_type heap(values);
+
+    heap.pop();
+    EXPECT_FALSE(heap.empty());
+    EXPECT_EQ(heap.size(), 5);
+    EXPECT_EQ(heap.max(), 4);
+}
+
+TYPED_TEST(HeapTest, PushWithNonEmptyInit) {
+    using heap_type = typename TestFixture::heap_type;
+    using value_type = typename heap_type::value_type;
+
+    std::vector<value_type> values{2, 3, 0, 1, 5, 4};
+    heap_type heap(values);
+
+    heap.push(7);
+    EXPECT_FALSE(heap.empty());
+    EXPECT_EQ(heap.size(), 7);
+    EXPECT_EQ(heap.max(), 7);
+
+    heap.push(6);
+    EXPECT_FALSE(heap.empty());
+    EXPECT_EQ(heap.size(), 8);
+    EXPECT_EQ(heap.max(), 7);
+}
 
 TYPED_TEST(HeapTest, DrainWithNonEmptyInit) {}
 

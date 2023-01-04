@@ -27,6 +27,8 @@ private:
     node_ptr root_;
 
     static node_ptr merge(node_ptr r1, node_ptr r2) noexcept {
+        assert((r1 == nullptr) || (r1 != r2));
+
         if (r1 == nullptr)
             return r2;
 
@@ -64,15 +66,16 @@ public:
         for (const auto val: vals)
             q.push(new node_type(val));
 
-        while (q.size() != 1) {
-            auto n1 = q.back();
+        while (q.size() > 1) {
+            auto n1 = q.front();
             q.pop();
-            auto n2 = q.back();
+            auto n2 = q.front();
             q.pop();
+            assert(n1 != n2);
             q.push(merge(n1, n2));
         }
 
-        root_ = q.back();
+        root_ = q.front();
     }
 
     [[nodiscard]] bool empty() const noexcept override {

@@ -83,14 +83,14 @@ public:
         }
 
         while (q.size() != 1) {
-            auto r1 = q.back();
+            auto r1 = q.front();
             q.pop();
-            auto r2 = q.back();
+            auto r2 = q.front();
             q.pop();
             q.push(merge(r1, r2));
         }
 
-        root_ = q.back();
+        root_ = q.front();
     }
 
     [[nodiscard]] bool empty() const noexcept override {
