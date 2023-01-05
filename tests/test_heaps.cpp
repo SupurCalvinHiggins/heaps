@@ -1,5 +1,6 @@
 #include <vector>
 #include "gtest/gtest.h"
+#include "skew_heap.h"
 #include "leftist_heap.h"
 #include "maxiphobic_heap.h"
 
@@ -9,7 +10,7 @@ public:
     using heap_type = T;
 };
 
-using HeapTypes = ::testing::Types<LeftistHeap, MaxiphobicHeap>;
+using HeapTypes = ::testing::Types<LeftistHeap, MaxiphobicHeap, SkewHeap>;
 TYPED_TEST_SUITE(HeapTest, HeapTypes);
 
 TYPED_TEST(HeapTest, EmptyWithEmptyInit) {
@@ -200,9 +201,48 @@ TYPED_TEST(HeapTest, PushWithNonEmptyInit) {
     EXPECT_EQ(heap.max(), 7);
 }
 
-TYPED_TEST(HeapTest, DrainWithNonEmptyInit) {}
+TYPED_TEST(HeapTest, DrainWithNonEmptyInit) {
+    using heap_type = typename TestFixture::heap_type;
+    using value_type = typename heap_type::value_type;
 
-TYPED_TEST(HeapTest, FillWithNonEmptyInit) {}
+    std::vector<value_type> values{3, 7, 1, 2, 8, 4, 9, 0, 5, 6};
+    heap_type heap(values);
+
+
+    for (int i = 0; i < values.size(); ++i) {
+        const auto max = 9 - i;
+        const auto size = 10 - i;
+        EXPECT_FALSE(heap.empty());
+        EXPECT_EQ(heap.size(), size);
+        EXPECT_EQ(heap.max(), max);
+
+        heap.pop();
+    }
+
+    EXPECT_TRUE(heap.empty());
+    EXPECT_EQ(heap.size(), 0);
+}
+
+TYPED_TEST(HeapTest, FillWithNonEmptyInit) {
+    using heap_type = typename TestFixture::heap_type;
+    using value_type = typename heap_type::value_type;
+
+    std::vector<value_type> values{2, 7, 1, 4, 6};
+    heap_type heap(values);
+
+    std::vector<value_type> push_values{0, 8, 5, 3, 9};
+    std::vector<value_type> max_after_push{7, 8, 8, 8, 9};
+    for (int i = 0; i < push_values.size(); ++i) {
+        const auto value = push_values[i];
+        heap.push(value);
+
+        const auto max = max_after_push[i];
+        const auto size = 5 + i + 1;
+        EXPECT_FALSE(heap.empty());
+        EXPECT_EQ(heap.size(), size);
+        EXPECT_EQ(heap.max(), max);
+    }
+}
 
 TYPED_TEST(HeapTest, FillDrainWithNonEmptyInit) {}
 
